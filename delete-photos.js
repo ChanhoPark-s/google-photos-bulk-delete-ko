@@ -60,7 +60,7 @@
       const aria = el.getAttribute("aria-label") || "";
       const dateBox = el.matches(DATE) ||
         /모든\s*(사진|항목)\s*선택|Select all photos from/i.test(aria);
-      return el.isConnected && !el.matches(ITEM) &&
+      return shown(el) && !el.matches(ITEM) &&
         !el.closest('[role="dialog"],[aria-modal="true"]') &&
         dateBox;
     });
