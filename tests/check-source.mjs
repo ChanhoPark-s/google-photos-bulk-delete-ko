@@ -21,7 +21,7 @@ test("한 번에 선택할 날짜 상한이 10일이다", () => {
 
 test("화면에 표시된 날짜 전체 선택 체크박스를 사용한다", () => {
   assert.match(script, /\[role="checkbox"\]\.R4HkWb/);
-  assert.match(script, /getBoundingClientRect/);
+  assert.doesNotMatch(script, /getBoundingClientRect/);
 });
 
 test("사용자 요청대로 자동 스크롤을 하지 않는다", () => {
@@ -36,12 +36,12 @@ test("선택, 휴지통 확인, 결과 검증을 차례로 완료하도록 한�
 });
 
 test("선택 실패 시 반복 클릭하지 않고 중단한다", () => {
-  assert.match(script, /날짜가 선택되지 않아 다음 클릭을 중단/);
+  assert.match(script, /날짜 선택이 확인되지 않아 중단/);
 });
 
 test("영구 삭제 확인창에서는 자동으로 진행하지 않는다", () => {
-  assert.match(script, /isPermanentAction\(dialog\)/);
-  assert.match(script, /영구 삭제 확인창 감지/);
+  assert.match(script, /isPermanent\(box\)/);
+  assert.match(script, /영구 삭제 확인창이 나타나/);
 });
 
 test("중단 및 상태 확인 명령이 제공된다", () => {
