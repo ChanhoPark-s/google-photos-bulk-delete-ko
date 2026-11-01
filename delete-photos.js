@@ -161,11 +161,13 @@
     return !activeDialog() && !anySelected() && !deleteButton();
   }
   async function waitFor(fn, timeoutMs, onPoll) {
-    const end = Date.now() + timeoutMs;
+    let end = Date.now() + timeoutMs;
     while (Date.now() < end) {
       if (status.stop) throw new Error("사용자 요청으로 중단됨");
       if (document.hidden) {
-        await sleep(400);
+        const hiddenAt = Date.now();
+        while (document.hidden && !status.stop) await sleep(400);
+        end += Date.now() - hiddenAt; // 백그라운드 대기 시간은 제한 시간에서 제외
         continue;
       }
       const result = fn();
