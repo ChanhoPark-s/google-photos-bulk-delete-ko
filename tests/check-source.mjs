@@ -31,7 +31,7 @@ test("사용자 요청대로 자동 스크롤을 하지 않는다", () => {
 test("선택, 휴지통 확인, 결과 검증을 차례로 완료하도록 한다", () => {
   assert.match(
     script,
-    /await selectVisibleDays\(\)[\s\S]*await confirmTrash\(before, watch\)[\s\S]*await verify\(before, watch\)/
+    /await selectDates\(\)[\s\S]*await confirmTrash\(\)[\s\S]*await verify\(before\)/
   );
 });
 
