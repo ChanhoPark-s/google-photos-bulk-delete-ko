@@ -121,8 +121,10 @@
   }
 
   function isPermanentDialog(dialog) {
-    return /영구\s*삭제|permanently delete|delete permanently|휴지통이 가득/i
-      .test(content(dialog));
+    // 안내 문구 속 "30일 후 영구 삭제"와 실제 영구 삭제 버튼을 구분합니다.
+    const buttons = [...dialog.querySelectorAll("button,[role=\"button\"]")];
+    return /휴지통이 가득|trash is full|bin is full/i.test(content(dialog)) ||
+      buttons.some(btn => /^(영구\s*삭제|Delete permanently|Permanently delete)$/i.test(text(btn)));
   }
 
   async function until(check, timeoutMs) {
