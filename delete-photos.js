@@ -84,7 +84,7 @@
   }
   function countSelected() {
     const el = document.querySelector("span.rtExYb");
-    const match = text(el).replace(/,/g, "").match(/\d+/);
+    const match = text(el).replace(/[,\s]/g, "").match(/\d+/);
     return match ? Number(match[0]) : null;
   }
   function activeDialog() {
@@ -204,6 +204,7 @@
     const observer = new MutationObserver(records => {
       for (const record of records) {
         if (record.target instanceof Element) check(record.target);
+        else if (record.target?.parentElement) check(record.target.parentElement);
         for (const node of record.addedNodes) {
           if (!(node instanceof Element)) continue;
           check(node);
@@ -266,8 +267,14 @@
 
       // 선택 수 UI가 확인되는 경우 과도한 묶음 생성을 차단
       const number = countSelected();
-      if (number !== null && number >= CONFIG.maxSelectedItems) {
-        log("선택 수", number, "장: 안전 상한에 도달하여 이번 묶음 선택 종료");
+      if (number !== null && number > CONFIG.maxSelectedItems) {
+        throw new Error(
+          "선택된 항목 " + number + "개가 안전 상한(" + CONFIG.maxSelectedItems +
+          ")을 초과했습니다. 이번 삭제는 진행하지 않습니다. 선택 해제 후 묶음 크기를 줄여주세요."
+        );
+      }
+      if (number !== null && number === CONFIG.maxSelectedItems) {
+        log("선택 수", number, "장: 이번 묶음 선택 종료");
         break;
       }
       await sleep(CONFIG.clickDelayMs);
@@ -333,6 +340,7 @@
     }, CONFIG.verifyTimeoutMs, () => {
       if (Date.now() - lastLog > 8000) {
         log("확인 대기 중:", {
+          단계: status.stage,
           선택됨: anySelected(),
           삭제버튼: !!deleteButton(),
           확인창: !!activeDialog(),
